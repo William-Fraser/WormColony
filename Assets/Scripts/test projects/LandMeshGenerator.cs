@@ -1,8 +1,12 @@
+using System.Drawing;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
 public class LandMeshGenerator : MonoBehaviour
 {
+    public int xChunkDistance;
+    public int zChunkDistance;
+
     Mesh mesh;
 
     Vector3[] vertices;
@@ -44,6 +48,9 @@ public class LandMeshGenerator : MonoBehaviour
         {
             for (int x = 0; x <= xSize; x++)
             {
+                /*x = x + xChunkDistance;
+                z = z + zChunkDistance;*/
+
                 float y = Mathf.PerlinNoise(x * .3f + plant, z * .3f + plant) * 2f;
                 vertices[i] = new Vector3(x, y, z);
                 i++;
@@ -57,7 +64,7 @@ public class LandMeshGenerator : MonoBehaviour
         for (int z = 0; z < zSize; z++)
         { 
             for (int x = 0; x < xSize; x++)
-            { 
+            {
                 triangles[tris + 0] = vert + 0;
                 triangles[tris + 1] = vert + xSize + 1;
                 triangles[tris + 2] = vert + 1;

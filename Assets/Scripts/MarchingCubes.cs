@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class MarchingCubes : MonoBehaviour
 {
+    public int xChunkDistance;
+    public int zChunkDistance;
+
     [SerializeField] private int genWidth = 50;
     [SerializeField] private int genHeight = 25;
 
@@ -17,8 +20,9 @@ public class MarchingCubes : MonoBehaviour
 
     bool use3DNoise = true;
 
-    [SerializeField] string seed; // when outputting seed for interface use GetHashCode()
     [SerializeField] bool useRandomSeed;
+    [SerializeField] string seed; // when outputting seed for interface use GetHashCode()
+    float plant;
     [Space(30)]
     [SerializeField] bool regenerate;
     [SerializeField] bool updateOn;
@@ -34,6 +38,12 @@ public class MarchingCubes : MonoBehaviour
 
     void Start()
     {
+        if (useRandomSeed)
+            seed = Time.time.ToString();
+
+        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
+        plant = pseudoRandom.Next(0, 100);
+
         meshFilter = GetComponent<MeshFilter>();
         SetHeights();
         MarchCubes();
@@ -101,13 +111,11 @@ public class MarchingCubes : MonoBehaviour
 
     private float PerlinNoise3D(float x, float y, float z)
     {
-        if (useRandomSeed)
-            seed = Time.time.ToString();
+        x = x + xChunkDistance;
+        z = z + zChunkDistance;
+        Debug.Log($" {x }, {xChunkDistance}. {z}, {zChunkDistance}");
 
-        System.Random pseudoRandom = new System.Random(seed.GetHashCode());
-
-        float plant = pseudoRandom.Next(0, 100);
-
+        // do perlin noise
         float xy = Mathf.PerlinNoise(x + plant, y + plant);
         float xz = Mathf.PerlinNoise(x + plant, z + plant);
         float yz = Mathf.PerlinNoise(y + plant, z + plant);
